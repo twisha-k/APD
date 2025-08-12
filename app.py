@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 model = joblib.load("aqi_prediction_model.pkl")
 
 # Load dataset (same one used for training)
-df = pd.read_csv("/content/drive/MyDrive/Classroom/PROJECT-II/Delhi/delhi2024.csv")
+df = pd.read_csv("my_data.csv")
 df["Timestamp"] = pd.to_datetime(df["Timestamp"])
 df = df.sort_values(by="Timestamp")
 
