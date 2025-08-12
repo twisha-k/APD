@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
-from datetime import datetime
 
 # Load saved model
 model = joblib.load("aqi_prediction_model.pkl")
@@ -22,18 +21,14 @@ pollutant = st.sidebar.selectbox(
     ["PM2.5 (µg/m³)", "PM10 (µg/m³)", "NO2 (µg/m³)", "CO (mg/m³)", "Ozone (µg/m³)"]
 )
 
-# Single date & time selection
+# Single date selection (no time)
 selected_date = st.sidebar.date_input("Select Date", df["Timestamp"].min().date())
-#selected_time = st.sidebar.time_input("Select Time", datetime.now().time())
 
-# Combine into a single datetime
-selected_datetime = datetime.combine(selected_date, selected_time)
-
-# Filter dataset for exact date and time
-filtered_df = df[df["Timestamp"] == selected_datetime]
+# Filter dataset for the selected date
+filtered_df = df[df["Timestamp"].dt.date == selected_date]
 
 if filtered_df.empty:
-    st.warning("No data found for the selected date and time.")
+    st.warning("No data found for the selected date.")
 else:
     # Predict AQI for filtered data
     X_filtered = filtered_df[["PM2.5 (µg/m³)", "PM10 (µg/m³)", "NO2 (µg/m³)", "CO (mg/m³)", "Ozone (µg/m³)"]]
@@ -57,7 +52,7 @@ else:
     # Apply classification
     filtered_df["AQI_Level"] = filtered_df["Predicted_AQI"].apply(classify_aqi)
 
-    # Display results
+    # Display pollutant chart
     st.subheader(f"{pollutant} Levels Over Time")
     plt.figure(figsize=(10,5))
     plt.plot(filtered_df["Timestamp"], filtered_df[pollutant], label=pollutant, color="blue")
@@ -86,4 +81,4 @@ else:
         for _, row in alerts.iterrows():
             st.error(f"{row['Timestamp']} - {row['AQI_Level']} AQI ({row['Predicted_AQI']:.1f})")
     else:
-        st.success("No severe alerts for this date & time ✅")
+        st.success("No severe alerts for this date ✅")
