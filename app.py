@@ -51,6 +51,24 @@ else:
 
     # Apply classification
     filtered_df["AQI_Level"] = filtered_df["Predicted_AQI"].apply(classify_aqi)
+    # Display pollutant chart
+    st.subheader(f"{pollutant} Levels Over Time")
+    plt.figure(figsize=(10,5))
+    plt.plot(filtered_df["Timestamp"], filtered_df[pollutant], label=pollutant, color="blue")
+    plt.xlabel("Date & Time")
+    plt.ylabel(pollutant)
+    plt.legend()
+    st.pyplot(plt)
+
+    # AQI Prediction Chart
+    st.subheader("Predicted AQI Over Time")
+    plt.figure(figsize=(10,5))
+    plt.plot(filtered_df["Timestamp"], filtered_df["Predicted_AQI"], label="Predicted AQI", color="red")
+    plt.xlabel("Date & Time")
+    plt.ylabel("AQI")
+    plt.legend()
+    st.pyplot(plt)
+
 
 
     # Show table
