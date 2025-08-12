@@ -65,6 +65,7 @@ def display_aqi_scale(aqi):
                 unsafe_allow_html=True
             )
             break
+    display_aqi_scale()
 
 if filtered_df.empty:
     st.warning("No data found for the selected date.")
