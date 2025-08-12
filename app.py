@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from PIL import Image
 
 # Load saved model
 model = joblib.load("aqi_prediction_model.pkl")
@@ -42,17 +43,28 @@ def classify_aqi(aqi):
         return "Hazardous"
 
 # AQI scale legend
-st.markdown("""
-### 📊 AQI Scale
-| AQI Value | Level | Color |
-|-----------|-------|-------|
-| 0-50 | 🟢 Good | Green |
-| 51-100 | 🟡 Moderate | Yellow |
-| 101-150 | 🟠 Unhealthy for Sensitive Groups | Orange |
-| 151-200 | 🔴 Unhealthy | Red |
-| 201-300 | 🟣 Very Unhealthy | Purple |
-| 301+ | ⚫ Hazardous | Black |
-""")
+def display_aqi_scale(aqi):
+    # AQI color mapping based on EPA standards
+    aqi_colors = [
+        (0, 50, "Good", "#009966", "🌿"),
+        (51, 100, "Moderate", "#ffde33", "🙂"),
+        (101, 150, "Unhealthy for Sensitive Groups", "#ff9933", "😷"),
+        (151, 200, "Unhealthy", "#cc0033", "🤒"),
+        (201, 300, "Very Unhealthy", "#660099", "☠️"),
+        (301, 500, "Hazardous", "#7e0023", "💀"),
+    ]
+
+    for low, high, label, color, icon in aqi_colors:
+        if low <= aqi <= high:
+            st.markdown(
+                f"""
+                <div style="background-color:{color}; padding: 15px; border-radius: 12px; text-align:center; color:white; font-size:20px;">
+                    <b>{icon} {label} ({aqi})</b>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            break
 
 if filtered_df.empty:
     st.warning("No data found for the selected date.")
