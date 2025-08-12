@@ -24,7 +24,7 @@ pollutant = st.sidebar.selectbox(
 
 # Single date & time selection
 selected_date = st.sidebar.date_input("Select Date", df["Timestamp"].min().date())
-selected_time = st.sidebar.time_input("Select Time", datetime.now().time())
+#selected_time = st.sidebar.time_input("Select Time", datetime.now().time())
 
 # Combine into a single datetime
 selected_datetime = datetime.combine(selected_date, selected_time)
